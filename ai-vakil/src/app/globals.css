@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+:root {
+  --background: #070707;
+  --surface: #0D0D10;
+  --surface-raised: #131318;
+  --surface-overlay: #1A1A22;
+  --surface-glass: rgba(13, 13, 16, 0.72);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-hover: rgba(255, 255, 255, 0.16);
+  --border-focus: rgba(139, 92, 246, 0.55);
+
+  --foreground: #F8F7FB;
+  --foreground-muted: #8B8792;
+  --foreground-subtle: #5B5763;
+
+  --primary: #8B5CF6;
+  --primary-hover: #7C3AED;
+  --primary-glow: rgba(139, 92, 246, 0.2);
+  --secondary: #A855F7;
+  --accent-blue: #6366F1;
+
+  --risk-low: #10B981;
+  --risk-medium: #F59E0B;
+  --risk-high: #F97316;
+  --risk-critical: #EF4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-glass: var(--surface-glass);
+
+  --color-foreground: var(--foreground);
+  --color-muted: var(--foreground-muted);
+  --color-subtle: var(--foreground-subtle);
+
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-hover: var(--border-hover);
+  --color-border-focus: var(--border-focus);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-accent-blue: var(--accent-blue);
+
+  --color-risk-low: var(--risk-low);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-high: var(--risk-high);
+  --color-risk-critical: var(--risk-critical);
+
+  --font-serif: var(--font-display-serif);
+  --font-sans: var(--font-ui-sans);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-ui-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for Legal Documents & Sidebars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070707;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.35);
+}
+
+/* Glassmorphism Surface Utilities */
+.glass-surface {
+  background: rgba(13, 13, 16, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: linear-gradient(145deg, rgba(20, 20, 26, 0.65) 0%, rgba(13, 13, 16, 0.8) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
+}
+
+.glass-card-interactive {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.12), 0 0 0 1px rgba(139, 92, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Gradient Text Utilities */
+.gradient-text-hero {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E0DCED 50%, #9F97B5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-accent {
+  background: linear-gradient(135deg, #F8F7FB 0%, #C4B5FD 45%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-subtle {
+  background: linear-gradient(135deg, #E6E4EE 0%, #A9A5B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Editorial Legal Typography */
+.font-display {
+  font-family: var(--font-display-serif), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.015em;
+}
+
+/* Glow Effects */
+.glow-primary {
+  box-shadow: 0 0 24px -4px rgba(139, 92, 246, 0.3);
+}
+
+.glow-subtle {
+  box-shadow: 0 0 16px -2px rgba(99, 102, 241, 0.2);
+}
