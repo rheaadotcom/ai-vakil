@@ -29,6 +29,31 @@ import {
 import { DocumentGrid } from "./document-grid";
 import { DocumentList } from "./document-list";
 
+const DOCUMENT_LOAD_TIMEOUT_MS = 10_000;
+
+function withDocumentLoadTimeout<T>(request: Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      reject(
+        new Error(
+          "Your documents are taking too long to load. Check your connection and try again.",
+        ),
+      );
+    }, DOCUMENT_LOAD_TIMEOUT_MS);
+
+    request.then(
+      (value) => {
+        window.clearTimeout(timeoutId);
+        resolve(value);
+      },
+      (error: unknown) => {
+        window.clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
+}
+
 export function DocumentsView() {
   const { user, isLoading: isAuthLoading, authError } = useAuthSession();
   const { openUploadModal } = useUploadModal();
@@ -61,7 +86,7 @@ export function DocumentsView() {
     setIsLoading(true);
     setLoadError(null);
     try {
-      const loadedDocuments = await listUserDocuments();
+      const loadedDocuments = await withDocumentLoadTimeout(listUserDocuments());
       if (documentRequestRevision.current === requestRevision) {
         setDocuments(loadedDocuments);
       }

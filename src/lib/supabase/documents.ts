@@ -2,7 +2,6 @@ import { z } from "zod";
 import { getSupabaseClient } from "./client";
 import {
   DOCUMENTS_BUCKET,
-  DOCUMENT_STORAGE_BUCKET,
   MAX_DOCUMENT_UPLOAD_BYTES,
 } from "./document-constants";
 import type { LibraryDocument } from "@/types/document";

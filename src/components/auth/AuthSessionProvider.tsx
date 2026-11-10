@@ -39,6 +39,7 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
     let isActive = true;
     let authStateEstablished = false;
     let hasAuthTransition = false;
+    let authInitializationResolved = false;
     let client;
     try {
       client = getSupabaseClient();
@@ -47,6 +48,27 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return;
     }
+
+    const resolveAuthInitialization = () => {
+      if (authInitializationResolved) {
+        return;
+      }
+      authInitializationResolved = true;
+      clearTimeout(authInitTimeoutId);
+      if (isActive) {
+        setIsLoading(false);
+      }
+    };
+
+    // Safety fallback: never allow auth initialization to hang indefinitely.
+    // If the session promise does not settle, resolve to a safe auth error state.
+    const authInitTimeoutId = setTimeout(() => {
+      if (isActive && !authInitializationResolved) {
+        authStateEstablished = true;
+        setAuthError("Authentication is temporarily unavailable. Please try again.");
+        resolveAuthInitialization();
+      }
+    }, 10000);
 
     const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
       if (event === "INITIAL_SESSION") {
@@ -66,7 +88,7 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       authStateEstablished = true;
       setUser(session?.user ?? null);
       setAuthError(null);
-      setIsLoading(false);
+      resolveAuthInitialization();
     });
 
     void (async () => {
@@ -88,19 +110,20 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       } catch {
         if (isActive && !authStateEstablished) {
           // Preserve existing user (if any) to avoid flashing unauthenticated UI.
-          // Keep loading true so UI does not prematurely show sign‑in state.
-          setAuthError(null);
-          // Do NOT set isLoading false here; wait for authStateEstablished via onAuthStateChange.
+          setAuthError(
+            "Authentication is temporarily unavailable. Please try again.",
+          );
         }
       } finally {
-        if (isActive && authStateEstablished) {
-          setIsLoading(false);
-        }
+        // Always resolve auth initialization — success, error, or otherwise.
+        // Never leave isLoading stuck true, otherwise consumers (e.g. /documents) hang.
+        resolveAuthInitialization();
       }
     })();
 
     return () => {
       isActive = false;
+      clearTimeout(authInitTimeoutId);
       subscription.unsubscribe();
     };
   }, []);
